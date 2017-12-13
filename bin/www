@@ -98,11 +98,9 @@ var gcm = require("node-gcm");
 var serverKey = 'AAAA3fD-75k:APA91bHOMdz83r9-dPmmp2rAhyHtpQu87EQx7xxKs2EPxLsM1Cc3GJSTc_un9MUnecGHgSSglIJiqj7XP_UZglOrORENBWgOqco6JogIlpyOzKiFpUgOWz0yiAm4Offf3CTZyLb-YZwb'; //put your server key here
 var sender = gcm.Sender(serverKey)
 
-var message = gcm.Message({
-    data: {
-        my_key: 'my value'
-    }
-})
+
+
+
 
 //
 
@@ -145,7 +143,11 @@ io.sockets.on('connection', function(socket) {
         socket.userid = userId;
     }
 
-    function sendCallPush(topic){
+    function sendCallPush(topic,messagedata){
+        var message = gcm.Message({
+            data:messagedata
+        })
+
         sender.sendNoRetry(message, { to: topic }, function(err, response){
             if (err) {
                 console.log("Something has gone wrong!");
@@ -177,7 +179,11 @@ io.sockets.on('connection', function(socket) {
         if (userTo == undefined) {
             socket.leaveAll()
             userFrom.socket.emit('outgoing-call', userId, socket.id);
-            sendCallPush('/topics/'+encodeURIComponent(userId))
+            sendCallPush('/topics/'+encodeURIComponent(userId),{
+                user_Id:userId,
+                room_id:socket.id
+
+            })
             return;
         } else{
             socket.join(userId);
