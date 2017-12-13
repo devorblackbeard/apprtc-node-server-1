@@ -9,6 +9,7 @@ var debug = require('debug')('AppRTC-node-server:server');
 var http = require('http');
 var socketIO = require('socket.io');
 
+
 /**
  * Get port from environment and store in Express.
  */
@@ -175,7 +176,8 @@ io.sockets.on('connection', function(socket) {
 
         if (userTo == undefined) {
             socket.leaveAll()
-            sendCallPush('/topics/nazarko%40gmail.com')
+            userFrom.socket.emit('outgoing-call', userId, socket.id);
+            sendCallPush('/topics/'+encodeURIComponent(userId))
             return;
         } else{
             socket.join(userId);
@@ -185,6 +187,7 @@ io.sockets.on('connection', function(socket) {
             userTo.otherUserId = socket.userid;
         }
     });
+
 
     socket.on('answer-call', function(userId) {
 
@@ -216,6 +219,7 @@ io.sockets.on('connection', function(socket) {
 
         if (userTo == undefined) {
             socket.leaveAll()
+            userFrom.socket.emit('hang-up-call', userId, socket.id);
             return;
         } else{
 
