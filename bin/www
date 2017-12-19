@@ -138,7 +138,6 @@ io.sockets.on('connection', function(socket) {
             userid:userId,
             sesionId:sessionId
         };
-
         socket.userid = userId;
     }
 
@@ -266,6 +265,14 @@ io.sockets.on('connection', function(socket) {
     socket.on('get-users-ids', function() {
         var userids =[];
         var currentUser = listOfUsers[socket.userid];
+        if (currentUser === undefined){
+            return;
+        }
+
+        if (currentUser.userid === undefined){
+            return;
+        }
+
         for (var user in listOfUsers)
             if(currentUser.userid !== user)
                 userids.push(user)

@@ -95,6 +95,7 @@ function requestTurnServers(turnRequestUrl, turnTransports) {
       // Create the RTCIceServer objects from the response.
       var turnServers = createIceServers(turnServerResponse.uris,
           turnServerResponse.username, turnServerResponse.password);
+
       if (!turnServers) {
         reject(Error('Error creating ICE servers from response.'));
         return;
